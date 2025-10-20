@@ -1,16 +1,16 @@
-package gui;
+package view;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class sos_GUI extends JFrame {
+public class sos_View extends JFrame {
    private JButton newGameButton;
    private JRadioButton rbSimple, rbGeneral;
    private ButtonGroup radioGroup;
    
 
    
-   public sos_GUI() {
+   public sos_View() {
        setTitle("SOS Board Game");
        setSize(1000, 1000);
        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,7 +37,7 @@ public class sos_GUI extends JFrame {
    }
    public static void main(String[] args) {
        SwingUtilities.invokeLater(() -> {
-       	sos_GUI gui = new sos_GUI();
+       	sos_View gui = new sos_View();
            gui.setVisible(true);
        });
    }
