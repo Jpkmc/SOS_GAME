@@ -2,6 +2,7 @@ package controller;
 
 import model.sos_Model;
 import view.sos_View;
+import javax.swing.*;
 
 
 public class sos_Controller {
@@ -11,7 +12,18 @@ public class sos_Controller {
     public sos_Controller(sos_Model model, sos_View view){
         this.view = view;
         this.model = model;
+
+        initialzeGame();
+
         
     }
+
+    private void initialzeGame(){
+        // the default of the baord to 3
+        model.setBoardSize(3);
+
+        
+    }
+
     
 }

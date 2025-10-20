@@ -3,11 +3,17 @@ package model;
 public class sos_Model {
     public enum Mode { Simple, General}
     public enum Player {Player1, Player2}
+    public enum Cell {EMPTY, S, O}
 
     private int size;
     private Mode mode;
-    private char board[][];
+    private Cell[][] board;
     private Player currentPlayer;
+    //Adding Variable for later development 
+    //private boolean gameEnd add for future devlopment 
+    //private Player Winner
+    //Private int player1Score
+    //private int player2Score
 
 
     public void SOS_Main(int size, Mode mode){
@@ -16,20 +22,85 @@ public class sos_Model {
         }
         this.size = size;
         this.mode = mode;
-        this.board = new char[size][size];
+        this.board =  new Cell[size][size];
         this.currentPlayer = Player.Player1;
+
+        //calling the function to create the board
+        initialzeBoard();
+
     }
-    
+
+    private void initialzeBoard(){
+        board = new Cell[size][size];
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                board[i][j] = Cell.EMPTY;
+            }
+        }
+    }
+
+    public void resetGame(){
+        initialzeBoard();
+        currentPlayer = Player.Player1;
+    }
+
+
+    public boolean move(int row, int colmun, char letter){
+        if(row < 0 || row >= size || colmun < 0 || colmun >= size){
+            return false;
+        }
+
+        if(board[row][colmun] != Cell.EMPTY){
+            return false;
+        }
+        if(letter == 'S'){
+            board[row][colmun] = Cell.S;
+        }
+        else if (letter == 'O'){
+            board[row][colmun] = Cell.O;
+        }
+        else{
+            return false;
+        }
+        return true;
+    }
+
+     public boolean cellEmpty(int row, int colmun){
+        if(row < 0 || row >= size || colmun < 0 || colmun >= size){
+            return false;
+        }
+        return board[row][colmun] == Cell.EMPTY;
+    }
+
+    public Cell getCell(int row, int colmun){
+        if(row < 0 || row >= size || colmun < 0 || colmun >= size){
+            return Cell.EMPTY;
+        }
+        return board[row][colmun];
+    }
+
 
     public int getSize(){
         return size;
     }
+
     public Mode mode(){
         return mode;
     }
+
+    public void setMode(Mode mode){
+        this.mode = mode;
+    }
+
     public Player getCurrentPlayer(){
         return currentPlayer;
     }
+
+    public Cell[][] getBoard(){
+        return board;
+    }
+
+
 
 
 }
