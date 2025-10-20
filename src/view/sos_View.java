@@ -17,7 +17,8 @@ public class sos_View extends JFrame {
    private JButton[][] boardButton;
    private JPanel boardPanel;
 
-   private JPanel topPanel, player1Panel, player2Panel, bottomPanel;
+   private JPanel topPanel, player1Panel, player2Panel;
+   private ButtonGroup player1Group, player2Group;
 
 
    
@@ -28,24 +29,20 @@ public class sos_View extends JFrame {
        setLayout(new BorderLayout(10,10));
 
        buildTopPanel();
-       buildCenterPanel();
-       buildBottomPanel();
+        buildCenterPanel();
+       //buildBottomPanel();
 
-       add(topPanel, BorderLayout.NORTH)
-       add(buildCenterPanel(), BorderLayout.CENTER);
-       add(bottomPanel, BorderLayout.SOUTH);
+       add(topPanel, BorderLayout.NORTH);
+        add(buildCenterPanel(), BorderLayout.CENTER);
+      // add(bottomPanel, BorderLayout.SOUTH);
 
    }
 
    private void buildTopPanel(){
-     JPanel mainPanel = new JPanel(new GridLayout(4, 1));
-       mainPanel.setBorder(BorderFactory.createTitledBorder("SOS Game"));
-       // Text (label)
-       mainPanel.add(new JLabel("Choose your board size: "));
-
+      topPanel = new JPanel(new GridLayout(4, 1));
+       topPanel.setBorder(BorderFactory.createTitledBorder("SOS Game"));
         newGameButton = new JButton("New Game");
-        //newGameButton.addActionListener(e -> startANewGame());
-        mainPanel.add(newGameButton);
+        topPanel.add(newGameButton);
 
        // Radio buttons
        rbSimple = new JRadioButton("Simple", true);
@@ -53,8 +50,72 @@ public class sos_View extends JFrame {
        modeSelection = new ButtonGroup();
        modeSelection.add(rbSimple);
        modeSelection.add(rbGeneral);
-       mainPanel.add(rbSimple);
-       mainPanel.add(rbGeneral);
-       add(mainPanel, BorderLayout.CENTER);
+       topPanel.add(rbSimple);
+       topPanel.add(rbGeneral);
+       add(topPanel, BorderLayout.CENTER);
    }
+   private JPanel buildCenterPanel(){
+    JPanel centerPanel = new JPanel(new BorderLayout(10,10));
+
+    buildPlayer1Panel();
+    buildPlayer2Panel();
+    buildBoardPanel();
+
+    centerPanel.add(player1Panel, BorderLayout.WEST);
+    centerPanel.add(player2Panel, BorderLayout.EAST);
+    centerPanel.add(player1Panel, BorderLayout.CENTER);
+
+    return centerPanel;
+   }
+
+   private void buildPlayer1Panel(){
+    player1Panel = new JPanel();
+    player1Panel.setBorder(BorderFactory.createTitledBorder("Player 1"));
+
+    rbPlayer1S = new JRadioButton("S", true);
+    rbPlayer1O = new JRadioButton("0");
+    player1Group = new ButtonGroup();
+    player1Group.add(rbPlayer1S);
+    player1Group.add(rbPlayer1O);
+
+
+
+   }
+
+   private void buildPlayer2Panel(){
+    player2Panel = new JPanel();
+    player2Panel.setBorder(BorderFactory.createTitledBorder("Player 2"));
+
+    rbPlayer2S = new JRadioButton("S", true);
+    rbPlayer2O = new JRadioButton("0");
+    player2Group = new ButtonGroup();
+    player2Group.add(rbPlayer2S);
+    player2Group.add(rbPlayer2O);
+
+
+
+   }
+
+   private void buildBoardPanel(){
+    boardPanel = new JPanel();
+   }
+
+   private void createBoard(int size){
+    boardPanel.removeAll();
+    boardPanel.setLayout(new GridLayout(size,size));
+    boardButton = new JButton[size][size];
+
+    for (int i = 0; i < size; i++){
+        for (int j = 0; j < size; j++){
+            JButton button = new JButton("");
+
+            boardButton[i][j] = button;
+            boardPanel.add(button);
+        }
+    }
+
+
+   }
+ 
+
 }
