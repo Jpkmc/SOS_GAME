@@ -10,7 +10,7 @@ public class app {
     }
 
     public static void main(String[] args) {
-        sos_Model game = new sos_Model();
+        sos_Model game = new sos_Model(0, null);
         sos_View view = new sos_View();
        //new sos_controller(view, game);
        view.setVisible(true);

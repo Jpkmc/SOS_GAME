@@ -14,16 +14,21 @@ public class sos_Controller {
         this.model = model;
 
         initialzeGame();
+        
 
         
     }
 
     private void initialzeGame(){
         // the default of the baord to 3
-        //model.setSize(3);
+        model.setSize(3);
+
+        model.mode(sos_Model.Mode.Simple);
+
+        model.initialzeBoard();
 
         
     }
 
-    
+   
 }

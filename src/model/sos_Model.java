@@ -15,8 +15,9 @@ public class sos_Model {
     //Private int player1Score
     //private int player2Score
 
+    
 
-    public void SOS_Main(int size, Mode mode){
+    public sos_Model(int size, Mode mode){
         if(size < 3){
             throw new IllegalArgumentException("Board size must be greater than or eqaul to 3");
         }
@@ -30,7 +31,7 @@ public class sos_Model {
 
     }
 
-    private void initialzeBoard(){
+    public void initialzeBoard(){
         board = new Cell[size][size];
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
@@ -80,11 +81,11 @@ public class sos_Model {
     }
 
 
-    public int getSize(){
+    public int setSize(int size){
         return size;
     }
 
-    public Mode mode(){
+    public Mode mode(Mode simple){
         return mode;
     }
 
@@ -99,6 +100,8 @@ public class sos_Model {
     public Cell[][] getBoard(){
         return board;
     }
+
+   
 
 
 
