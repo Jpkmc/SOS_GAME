@@ -13,6 +13,7 @@ public class app {
         sos_Model game = new sos_Model();
         sos_View view = new sos_View();
        //new sos_controller(view, game);
-       //view.setVisable(true);
+       view.setVisible(true);
+    
     }
 }

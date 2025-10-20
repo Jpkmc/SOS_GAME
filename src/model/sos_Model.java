@@ -19,6 +19,7 @@ public class sos_Model {
         this.board = new char[size][size];
         this.currentPlayer = Player.Player1;
     }
+    
 
     public int getSize(){
         return size;

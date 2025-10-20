@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import model.sos_Model;
 
 public class sos_View extends JFrame {
    private JButton newGameButton;
@@ -12,7 +13,7 @@ public class sos_View extends JFrame {
    
    public sos_View() {
        setTitle("SOS Board Game");
-       setSize(1000, 1000);
+       setSize(600, 400);
        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        setLayout(new BorderLayout());
        // Panel with a line border
@@ -34,11 +35,5 @@ public class sos_View extends JFrame {
        mainPanel.add(rbSimple);
        mainPanel.add(rbGeneral);
        add(mainPanel, BorderLayout.CENTER);
-   }
-   public static void main(String[] args) {
-       SwingUtilities.invokeLater(() -> {
-       	sos_View gui = new sos_View();
-           gui.setVisible(true);
-       });
    }
 }
