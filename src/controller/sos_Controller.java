@@ -79,14 +79,22 @@ public class sos_Controller {
     }
 
     private void handleNewGame() {
-        int size = view.getBoardsize();
-        if(size >= 3) {
-            model.setSize(size);
-            model.resetGame();
-            createViewBoard(size);
-            updateBoardDisplay();
-        } else {
-            JOptionPane.showMessageDialog(view, "Board size must be at least 3", "Invalid Size", JOptionPane.ERROR_MESSAGE);
+        try {
+            int size = view.getBoardsize();
+            if(size >= 3) {
+                model.setSize(size);
+                model.resetGame();
+                createViewBoard(size);
+                updateBoardDisplay();
+                view.getBoardPanel().revalidate();
+                view.getBoardPanel().repaint();
+            } else {
+                JOptionPane.showMessageDialog(view, "Board size must be at least 3", "Invalid Size", JOptionPane.ERROR_MESSAGE);
+                view.setBoardSize(5); // Reset to default size
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(view, "Please enter a valid number for board size", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            view.setBoardSize(5); // Reset to default size
         }
     }
 

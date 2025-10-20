@@ -55,7 +55,11 @@ public class sos_View extends JFrame {
 
        topPanel.add(new JLabel("Board Size: "));
        txtBoardsize = new JTextField("5", 5);
+       txtBoardsize.setToolTipText("Enter a number 3 or greater");
        topPanel.add(txtBoardsize);
+       
+       // Add a spacer
+       topPanel.add(Box.createHorizontalStrut(10));
 
 
    }
@@ -134,13 +138,12 @@ public class sos_View extends JFrame {
     }
    }
 
-   public int getBoardsize(){
-    try{
+   public int getBoardsize() throws NumberFormatException {
         String text = txtBoardsize.getText().trim();
+        if (text.isEmpty()) {
+            throw new NumberFormatException("Board size cannot be empty");
+        }
         return Integer.parseInt(text);
-    }catch(NumberFormatException e){
-        return 3;
-    }
    }
 
    public void setBoardSize(int boardSize){

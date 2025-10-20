@@ -88,8 +88,11 @@ public class sos_Model {
         if(size < 3) {
             throw new IllegalArgumentException("Board size must be greater than or equal to 3");
         }
-        this.size = size;
-        initialzeBoard();
+        if (this.size != size) {
+            this.size = size;
+            initialzeBoard();
+            currentPlayer = Player.Player1;
+        }
     }
 
     public Mode mode(Mode simple){
