@@ -20,7 +20,7 @@ public class sos_Controller {
 
     private void initialzeGame(){
         // the default of the baord to 3
-        model.setBoardSize(3);
+        //model.setSize(3);
 
         
     }
