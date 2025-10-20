@@ -21,14 +21,14 @@ public class sos_Controller {
 
     private void initialzeGame(){
         // the default of the baord to 3
-        model.setSize(5);
-        view.setBoardSize(5);
+        model.setSize(3);
+        view.setBoardSize(3);
 
         model.mode(sos_Model.Mode.Simple);
 
         model.initialzeBoard();
 
-        createViewBoard(5);
+        createViewBoard(3);
 
         updateBoardDisplay();
         
@@ -59,6 +59,21 @@ public class sos_Controller {
         view.createBoard(size);
     }
 
+    private void attachBoardButtonListeners() {
+        JButton[][] boardButtons = view.getBoardButton();
+        for(int i = 0; i < boardButtons.length; i++) {
+            for(int j = 0; j < boardButtons[i].length; j++) {
+                final int row = i;
+                final int col = j;
+                // Remove any existing listeners to prevent duplicates
+                for(ActionListener al : boardButtons[i][j].getActionListeners()) {
+                    boardButtons[i][j].removeActionListener(al);
+                }
+                boardButtons[i][j].addActionListener(e -> handleCellClick(row, col));
+            }
+        }
+    }
+
     private void initializeListeners() {
         // Add listener for new game button
         view.getNewGameButton().addActionListener(e -> handleNewGame());
@@ -68,14 +83,7 @@ public class sos_Controller {
         view.getRbGeneral().addActionListener(e -> handleModeChange(sos_Model.Mode.General));
 
         // Add listeners for board buttons
-        JButton[][] boardButtons = view.getBoardButton();
-        for(int i = 0; i < boardButtons.length; i++) {
-            for(int j = 0; j < boardButtons[i].length; j++) {
-                final int row = i;
-                final int col = j;
-                boardButtons[i][j].addActionListener(e -> handleCellClick(row, col));
-            }
-        }
+        attachBoardButtonListeners();
     }
 
     private void handleNewGame() {
@@ -85,6 +93,7 @@ public class sos_Controller {
                 model.setSize(size);
                 model.resetGame();
                 createViewBoard(size);
+                attachBoardButtonListeners(); // Re-attach listeners to new buttons
                 updateBoardDisplay();
                 view.getBoardPanel().revalidate();
                 view.getBoardPanel().repaint();
@@ -115,8 +124,6 @@ public class sos_Controller {
 
             if(model.move(row, col, letter)) {
                 updateBoardDisplay();
-                // Switch players after successful move
-                model.getCurrentPlayer();
             }
         }
     }
