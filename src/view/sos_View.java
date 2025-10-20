@@ -24,7 +24,7 @@ public class sos_View extends JFrame {
    
    public sos_View() {
        setTitle("SOS Board Game");
-       setSize(600, 400);
+       setSize(800, 700);
        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        setLayout(new BorderLayout(10,10));
 
@@ -39,7 +39,7 @@ public class sos_View extends JFrame {
    }
 
    private void buildTopPanel(){
-      topPanel = new JPanel(new GridLayout(4, 1));
+      topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15,10));
        topPanel.setBorder(BorderFactory.createTitledBorder("SOS Game"));
         newGameButton = new JButton("New Game");
         topPanel.add(newGameButton);
@@ -63,14 +63,16 @@ public class sos_View extends JFrame {
 
     centerPanel.add(player1Panel, BorderLayout.WEST);
     centerPanel.add(player2Panel, BorderLayout.EAST);
-    centerPanel.add(player1Panel, BorderLayout.CENTER);
+    centerPanel.add(boardPanel, BorderLayout.CENTER);
 
     return centerPanel;
    }
 
    private void buildPlayer1Panel(){
     player1Panel = new JPanel();
+    player1Panel.setLayout((new BoxLayout(player1Panel, BoxLayout.Y_AXIS)));
     player1Panel.setBorder(BorderFactory.createTitledBorder("Player 1"));
+    player1Panel.setPreferredSize(new Dimension(120,0));
 
     rbPlayer1S = new JRadioButton("S", true);
     rbPlayer1O = new JRadioButton("0");
@@ -78,13 +80,21 @@ public class sos_View extends JFrame {
     player1Group.add(rbPlayer1S);
     player1Group.add(rbPlayer1O);
 
+    player1Panel.add(Box.createVerticalGlue());
+    player1Panel.add(rbPlayer1S);
+    player1Panel.add(Box.createVerticalGlue());
+    player1Panel.add(rbPlayer1O);
+    player1Panel.add(Box.createRigidArea(new Dimension(0, 10)));
+    
 
 
    }
 
    private void buildPlayer2Panel(){
     player2Panel = new JPanel();
+    player2Panel.setLayout((new BoxLayout(player2Panel, BoxLayout.Y_AXIS)));
     player2Panel.setBorder(BorderFactory.createTitledBorder("Player 2"));
+    player2Panel.setPreferredSize(new Dimension(120,0));
 
     rbPlayer2S = new JRadioButton("S", true);
     rbPlayer2O = new JRadioButton("0");
@@ -93,6 +103,11 @@ public class sos_View extends JFrame {
     player2Group.add(rbPlayer2O);
 
 
+    player2Panel.add(Box.createVerticalGlue());
+    player2Panel.add(rbPlayer2S);
+    player2Panel.add(Box.createVerticalGlue());
+    player2Panel.add(rbPlayer2O);
+    player2Panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
    }
 
