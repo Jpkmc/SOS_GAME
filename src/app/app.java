@@ -10,10 +10,9 @@ public class app {
     }
 
     public static void main(String[] args) {
-        sos_Model game = new sos_Model(3, null);
+        sos_Model game = new sos_Model(5, sos_Model.Mode.Simple);
         sos_View view = new sos_View();
-       new sos_Controller(game, view);
-       view.setVisible(true);
-    
+        new sos_Controller(game, view);
+        view.setVisible(true);
     }
 }

@@ -53,8 +53,8 @@ public class sos_View extends JFrame {
        add(topPanel, BorderLayout.CENTER);
 
 
-       topPanel.add(new JLabel("Borad Size: "));
-       txtBoardsize = new JTextField("Enter an Board Size: ");
+       topPanel.add(new JLabel("Board Size: "));
+       txtBoardsize = new JTextField("5", 5);
        topPanel.add(txtBoardsize);
 
 

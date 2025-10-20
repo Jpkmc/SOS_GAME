@@ -63,6 +63,9 @@ public class sos_Model {
         else{
             return false;
         }
+        
+        // Switch players after a successful move
+        currentPlayer = (currentPlayer == Player.Player1) ? Player.Player2 : Player.Player1;
         return true;
     }
 
@@ -81,8 +84,12 @@ public class sos_Model {
     }
 
 
-    public int setSize(int size){
-        return size;
+    public void setSize(int size){
+        if(size < 3) {
+            throw new IllegalArgumentException("Board size must be greater than or equal to 3");
+        }
+        this.size = size;
+        initialzeBoard();
     }
 
     public Mode mode(Mode simple){

@@ -16,21 +16,19 @@ public class sos_Controller {
         this.model = model;
 
         initialzeGame();
-        //initialzeListners();
-
-        
+        initializeListeners();
     }
 
     private void initialzeGame(){
         // the default of the baord to 3
-        model.setSize(3);
-        view.setBoardSize(3);
+        model.setSize(5);
+        view.setBoardSize(5);
 
         model.mode(sos_Model.Mode.Simple);
 
         model.initialzeBoard();
 
-        createViewBoard(3);
+        createViewBoard(5);
 
         updateBoardDisplay();
         
@@ -50,7 +48,7 @@ public class sos_Controller {
                         boardButtons[i][j].setText("O");
                     }
                     else{
-                        boardButtons[i][j].setText("null");
+                        boardButtons[i][j].setText("");
                     }
                 }
             }
@@ -59,5 +57,59 @@ public class sos_Controller {
    
     private void createViewBoard(int size){
         view.createBoard(size);
+    }
+
+    private void initializeListeners() {
+        // Add listener for new game button
+        view.getNewGameButton().addActionListener(e -> handleNewGame());
+
+        // Add listeners for mode selection
+        view.getRbSimple().addActionListener(e -> handleModeChange(sos_Model.Mode.Simple));
+        view.getRbGeneral().addActionListener(e -> handleModeChange(sos_Model.Mode.General));
+
+        // Add listeners for board buttons
+        JButton[][] boardButtons = view.getBoardButton();
+        for(int i = 0; i < boardButtons.length; i++) {
+            for(int j = 0; j < boardButtons[i].length; j++) {
+                final int row = i;
+                final int col = j;
+                boardButtons[i][j].addActionListener(e -> handleCellClick(row, col));
+            }
+        }
+    }
+
+    private void handleNewGame() {
+        int size = view.getBoardsize();
+        if(size >= 3) {
+            model.setSize(size);
+            model.resetGame();
+            createViewBoard(size);
+            updateBoardDisplay();
+        } else {
+            JOptionPane.showMessageDialog(view, "Board size must be at least 3", "Invalid Size", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void handleModeChange(sos_Model.Mode newMode) {
+        model.setMode(newMode);
+    }
+
+    private void handleCellClick(int row, int col) {
+        if(model.cellEmpty(row, col)) {
+            sos_Model.Player currentPlayer = model.getCurrentPlayer();
+            char letter;
+            
+            if(currentPlayer == sos_Model.Player.Player1) {
+                letter = view.getRbPlayer1S().isSelected() ? 'S' : 'O';
+            } else {
+                letter = view.getRbPlayer2S().isSelected() ? 'S' : 'O';
+            }
+
+            if(model.move(row, col, letter)) {
+                updateBoardDisplay();
+                // Switch players after successful move
+                model.getCurrentPlayer();
+            }
+        }
     }
 }
