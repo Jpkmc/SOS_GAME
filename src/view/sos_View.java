@@ -120,7 +120,7 @@ public class sos_View extends JFrame {
     boardPanel = new JPanel();
    }
 
-   private void createBoard(int size){
+   public void createBoard(int size){
     boardPanel.removeAll();
     boardPanel.setLayout(new GridLayout(size,size));
     boardButton = new JButton[size][size];
