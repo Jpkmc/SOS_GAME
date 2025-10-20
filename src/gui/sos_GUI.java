@@ -4,9 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class sos_GUI extends JFrame {
-   private JCheckBox checkBox;
+   private JButton newGameButton;
    private JRadioButton rbSimple, rbGeneral;
    private ButtonGroup radioGroup;
+   
+
+   
    public sos_GUI() {
        setTitle("SOS Board Game");
        setSize(1000, 1000);
@@ -18,11 +21,9 @@ public class sos_GUI extends JFrame {
        // Text (label)
        mainPanel.add(new JLabel("Choose your board size: "));
 
-
-       // Checkbox
-       checkBox = new JCheckBox("Enable feature");
-       mainPanel.add(checkBox);
-
+        newGameButton = new JButton("New Game");
+        //newGameButton.addActionListener(e -> startANewGame());
+        mainPanel.add(newGameButton);
 
        // Radio buttons
        rbSimple = new JRadioButton("Simple", true);
