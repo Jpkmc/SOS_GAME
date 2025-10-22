@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import model.sos_Model;
 
-public class sos_Test {
+public class SosGameTest {
     private sos_Model game;
 
     @Before
