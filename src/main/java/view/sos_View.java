@@ -54,10 +54,9 @@ public class sos_View extends JFrame {
 
 
        topPanel.add(new JLabel("Board Size: "));
-       txtBoardsize = new JTextField("5", 5);
+       txtBoardsize = new JTextField("3", 3);
        txtBoardsize.setToolTipText("Enter a number 3 or greater");
        topPanel.add(txtBoardsize);
-       
        // Add a spacer
        topPanel.add(Box.createHorizontalStrut(10));
 
@@ -77,12 +76,16 @@ public class sos_View extends JFrame {
     return centerPanel;
    }
 
+   private JLabel scoreboardP1;
+   private JLabel scoreboardP2;
+
    private void buildPlayer1Panel(){
     player1Panel = new JPanel();
     player1Panel.setLayout((new BoxLayout(player1Panel, BoxLayout.Y_AXIS)));
     player1Panel.setBorder(BorderFactory.createTitledBorder("Player 1"));
     player1Panel.setPreferredSize(new Dimension(120,0));
-
+    scoreboardP1 = new JLabel("Score P1: 0");
+    player1Panel.add(scoreboardP1);
     rbPlayer1S = new JRadioButton("S", true);
     rbPlayer1O = new JRadioButton("0");
     player1Group = new ButtonGroup();
@@ -104,7 +107,8 @@ public class sos_View extends JFrame {
     player2Panel.setLayout((new BoxLayout(player2Panel, BoxLayout.Y_AXIS)));
     player2Panel.setBorder(BorderFactory.createTitledBorder("Player 2"));
     player2Panel.setPreferredSize(new Dimension(120,0));
-
+    scoreboardP2 = new JLabel("Score P2: 0");
+    player2Panel.add(scoreboardP2);
     rbPlayer2S = new JRadioButton("S", true);
     rbPlayer2O = new JRadioButton("0");
     player2Group = new ButtonGroup();
@@ -181,4 +185,12 @@ public class sos_View extends JFrame {
    public void setPlayer1Group(ButtonGroup player1Group) { this.player1Group = player1Group;}
    public ButtonGroup getPlayer2Group() {return player2Group; }
    public void setPlayer2Group(ButtonGroup player2Group) { this.player2Group = player2Group;}
+
+   public void updateScore(int player , int score) {
+       if (player == 1) {
+           scoreboardP1.setText("Score P1: " + score);
+       } else if (player == 2) {
+           scoreboardP2.setText("Score P2: " + score);
+       }
+   }
 }

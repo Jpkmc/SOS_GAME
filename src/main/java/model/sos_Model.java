@@ -9,11 +9,10 @@ public class sos_Model {
     private Mode mode;
     private Cell[][] board;
     private Player currentPlayer;
-    //Adding Variable for later development 
-    //private boolean gameEnd add for future devlopment 
-    //private Player Winner
-    //Private int player1Score
-    //private int player2Score
+    private boolean gameEnd;
+    private Player winner;
+    private int player1Score;
+    private int player2Score;
 
     
 
@@ -25,10 +24,13 @@ public class sos_Model {
         this.mode = mode;
         this.board =  new Cell[size][size];
         this.currentPlayer = Player.Player1;
+        this.gameEnd = false;
+        this.winner = null;
+        this.player1Score = 0;
+        this.player2Score = 0;
 
         //calling the function to create the board
         initialzeBoard();
-
     }
 
     public void initialzeBoard(){
@@ -43,6 +45,10 @@ public class sos_Model {
     public void resetGame(){
         initialzeBoard();
         currentPlayer = Player.Player1;
+        gameEnd = false;
+        winner = null;
+        player1Score = 0;
+        player2Score = 0;
     }
 
 
@@ -51,9 +57,10 @@ public class sos_Model {
             return false;
         }
 
-        if(board[row][colmun] != Cell.EMPTY){
+        if(board[row][colmun] != Cell.EMPTY || gameEnd){
             return false;
         }
+        
         if(letter == 'S'){
             board[row][colmun] = Cell.S;
         }
