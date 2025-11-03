@@ -4,8 +4,8 @@ import model.sos_Model;
 import view.sos_View;
 import controller.sos_Controller;
 
-public class app {
-    public app(){
+public class App {
+    public App(){
 
     }
 
