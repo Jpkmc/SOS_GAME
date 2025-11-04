@@ -168,13 +168,13 @@ public class sos_Controller {
      * @param column which column they clicked
      */
     private void handleCellClick(int row, int column) {
-        // only do sumthing if cell is empty
+        // only do something if cell is empty and game is not over
         if(model.cellEmpty(row, column)) {
-            // see whos turn it is
+            // see who's turn it is
             sos_Model.Player currentPlayer = model.getCurrentPlayer();
             char letter;
             
-            // get wut letter they want (S or O)
+            // get what letter they want (S or O)
             if(currentPlayer == sos_Model.Player.Player1) {
                 letter = view.getRbPlayer1S().isSelected() ? 'S' : 'O';
             } else {
@@ -184,9 +184,47 @@ public class sos_Controller {
             // try to make the move
             if(model.move(row, column, letter)) {
                 updateBoardDisplay();
+                updateScores();
+                
+                if (model.isGameOver()) {
+                    handleGameOver();
+                }
             }
         }
     }
 
-    
+    private void updateScores() {
+        view.updateScore(1, model.getPlayer1Score());
+        view.updateScore(2, model.getPlayer2Score());
+    }
+
+    private void handleGameOver() {
+        String message;
+        sos_Model.Player winner = model.getWinner();
+        
+        if (model.isSimpleGameMode()) {
+            // Simple game: first SOS wins
+            if (winner != null) {
+                message = (winner == sos_Model.Player.Player1) ? 
+                    "Player 1 wins by forming SOS!" : 
+                    "Player 2 wins by forming SOS!";
+            } else {
+                message = "Game is a draw - no SOS formed!";
+            }
+        } else {
+            // General game: highest score wins
+            int p1Score = model.getPlayer1Score();
+            int p2Score = model.getPlayer2Score();
+            
+            if (p1Score > p2Score) {
+                message = "Player 1 wins with score " + p1Score + "!";
+            } else if (p2Score > p1Score) {
+                message = "Player 2 wins with score " + p2Score + "!";
+            } else {
+                message = "It's a draw! Both players scored " + p1Score + " points.";
+            }
+        }
+        
+        JOptionPane.showMessageDialog(view, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+    }
 }

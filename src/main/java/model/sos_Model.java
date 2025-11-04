@@ -118,9 +118,114 @@ public class sos_Model {
         return board;
     }
 
-   
+    public boolean isGameOver() {
+        if (mode == Mode.Simple && winner != null) {
+            return true;
+        }
+        
+        // Check if board is full
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == Cell.EMPTY) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
+    public Player getWinner() {
+        if (!isGameOver()) {
+            return null;
+        }
+        
+        if (mode == Mode.Simple) {
+            return winner;
+        } else {
+            // For general game mode
+            if (player1Score > player2Score) {
+                return Player.Player1;
+            } else if (player2Score > player1Score) {
+                return Player.Player2;
+            } else {
+                return null; // Draw
+            }
+        }
+    }
 
+    public boolean isSimpleGameMode() {
+        return mode == Mode.Simple;
+    }
 
+    public int getPlayer1Score() {
+        return player1Score;
+    }
 
+    public int getPlayer2Score() {
+        return player2Score;
+    }
+
+    private boolean checkSOS(int row, int col) {
+        // Check horizontal SOS
+        if (col <= size - 3 && 
+            board[row][col] == Cell.S &&
+            board[row][col + 1] == Cell.O &&
+            board[row][col + 2] == Cell.S) {
+            return true;
+        }
+        
+        // Check vertical SOS
+        if (row <= size - 3 &&
+            board[row][col] == Cell.S &&
+            board[row + 1][col] == Cell.O &&
+            board[row + 2][col] == Cell.S) {
+            return true;
+        }
+        
+        // Check diagonal down-right
+        if (row <= size - 3 && col <= size - 3 &&
+            board[row][col] == Cell.S &&
+            board[row + 1][col + 1] == Cell.O &&
+            board[row + 2][col + 2] == Cell.S) {
+            return true;
+        }
+        
+        // Check diagonal down-left
+        if (row <= size - 3 && col >= 2 &&
+            board[row][col] == Cell.S &&
+            board[row + 1][col - 1] == Cell.O &&
+            board[row + 2][col - 2] == Cell.S) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    public int checkSOSFormation(int row, int col) {
+        int count = 0;
+        
+        // Check for SOS formations in all directions
+        for (int i = Math.max(0, row - 2); i <= Math.min(size - 3, row); i++) {
+            for (int j = Math.max(0, col - 2); j <= Math.min(size - 3, col); j++) {
+                if (checkSOS(i, j)) {
+                    count++;
+                    if (currentPlayer == Player.Player1) {
+                        player1Score++;
+                        if (mode == Mode.Simple) {
+                            winner = Player.Player1;
+                            gameEnd = true;
+                        }
+                    } else {
+                        player2Score++;
+                        if (mode == Mode.Simple) {
+                            winner = Player.Player2;
+                            gameEnd = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return count;
+    }
 }
