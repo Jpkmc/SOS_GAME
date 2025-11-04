@@ -64,6 +64,7 @@ public class sos_Controller {
 
         // only update if we have both arrays
         if(board != null && boardButtons != null){
+            // Update board cells
             for(int i = 0; i < board.length; i++){
                 for(int j = 0; j < board[i].length; j++){
                     if(board[i][j] == sos_Model.Cell.S){
@@ -138,7 +139,10 @@ public class sos_Controller {
                 createViewBoard(size);
                 attachBoardButtonListeners(); // add click handlers to new buttons
                 updateBoardDisplay();
-                // make sure the board looks rite
+                // Clear any existing lines
+                view.updateLines(model.getSOSLines());
+                updateScores();
+                // make sure the board looks right
                 view.getBoardPanel().revalidate();
                 view.getBoardPanel().repaint();
             } else {
@@ -183,8 +187,15 @@ public class sos_Controller {
 
             // try to make the move
             if(model.move(row, column, letter)) {
+                // Update the board display first
                 updateBoardDisplay();
-                updateScores();
+                // Force an update of the lines with latest state
+                SwingUtilities.invokeLater(() -> {
+                    view.updateLines(model.getSOSLines());
+                    updateScores();
+                    view.revalidate();
+                    view.repaint();
+                });
                 
                 if (model.isGameOver()) {
                     handleGameOver();
