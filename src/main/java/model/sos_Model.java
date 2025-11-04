@@ -71,6 +71,9 @@ public class sos_Model {
             return false;
         }
         
+        // Check for SOS formations after the move
+        checkSOSFormation(row, colmun);
+        
         // Switch players after a successful move
         currentPlayer = (currentPlayer == Player.Player1) ? Player.Player2 : Player.Player1;
         return true;
