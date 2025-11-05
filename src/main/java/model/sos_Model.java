@@ -9,12 +9,8 @@ public class sos_Model {
     private Mode mode;
     private Cell[][] board;
     private Player currentPlayer;
-    private boolean gameEnd;
-    private Player winner;
-    private int player1Score;
-    private int player2Score;
-
-    
+    private sos_Winning gameLogic;
+    private java.util.ArrayList<SOSLine> sosLines;
 
     public sos_Model(int size, Mode mode){
         if(size < 3){
@@ -22,15 +18,19 @@ public class sos_Model {
         }
         this.size = size;
         this.mode = mode;
-        this.board =  new Cell[size][size];
+        this.board = new Cell[size][size];
         this.currentPlayer = Player.Player1;
-        this.gameEnd = false;
-        this.winner = null;
-        this.player1Score = 0;
-        this.player2Score = 0;
+        
+        // Initialize game logic based on mode
+        if (mode == Mode.Simple) {
+            this.gameLogic = new sos_SimpleMode(this);
+        } else {
+            this.gameLogic = new sos_GeneralMode(this);
+        }
 
         //calling the function to create the board
         initialzeBoard();
+        sosLines = new java.util.ArrayList<>();
     }
 
     public void initialzeBoard(){
@@ -45,19 +45,20 @@ public class sos_Model {
     public void resetGame(){
         initialzeBoard();
         currentPlayer = Player.Player1;
-        gameEnd = false;
-        winner = null;
-        player1Score = 0;
-        player2Score = 0;
+        if (mode == Mode.Simple) {
+            gameLogic = new sos_SimpleMode(this);
+        } else {
+            gameLogic = new sos_GeneralMode(this);
+        }
+        sosLines = new java.util.ArrayList<>();
     }
-
 
     public boolean move(int row, int colmun, char letter){
         if(row < 0 || row >= size || colmun < 0 || colmun >= size){
             return false;
         }
 
-        if(board[row][colmun] != Cell.EMPTY || gameEnd){
+        if(board[row][colmun] != Cell.EMPTY || gameLogic.isGameOver()){
             return false;
         }
         
@@ -71,11 +72,20 @@ public class sos_Model {
             return false;
         }
         
-        // Check for SOS formations after the move
-        checkSOSFormation(row, colmun);
+        // Store current player before checking SOS formations
+        Player movePlayer = currentPlayer;
         
-        // Switch players after a successful move
-        currentPlayer = (currentPlayer == Player.Player1) ? Player.Player2 : Player.Player1;
+        // Check for SOS formations after the move
+        int sosCount = checkSOSFormation(row, colmun, movePlayer);
+        
+        // Handle SOS formation in the appropriate game mode
+        gameLogic.handleSOSFormation(sosCount, movePlayer);
+        
+        // Switch turns based on game mode rules
+        if (gameLogic.shouldSwitchTurn(sosCount)) {
+            currentPlayer = (currentPlayer == Player.Player1) ? Player.Player2 : Player.Player1;
+        }
+        
         return true;
     }
 
@@ -122,38 +132,11 @@ public class sos_Model {
     }
 
     public boolean isGameOver() {
-        if (mode == Mode.Simple && winner != null) {
-            return true;
-        }
-        
-        // Check if board is full
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board[i][j] == Cell.EMPTY) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return gameLogic.isGameOver();
     }
 
     public Player getWinner() {
-        if (!isGameOver()) {
-            return null;
-        }
-        
-        if (mode == Mode.Simple) {
-            return winner;
-        } else {
-            // For general game mode
-            if (player1Score > player2Score) {
-                return Player.Player1;
-            } else if (player2Score > player1Score) {
-                return Player.Player2;
-            } else {
-                return null; // Draw
-            }
-        }
+        return gameLogic.getWinner();
     }
 
     public boolean isSimpleGameMode() {
@@ -161,74 +144,193 @@ public class sos_Model {
     }
 
     public int getPlayer1Score() {
-        return player1Score;
+        return mode == Mode.Simple ? 
+            ((sos_SimpleMode)gameLogic).getPlayer1Score() : 
+            ((sos_GeneralMode)gameLogic).getPlayer1Score();
     }
 
     public int getPlayer2Score() {
-        return player2Score;
+        return mode == Mode.Simple ? 
+            ((sos_SimpleMode)gameLogic).getPlayer2Score() : 
+            ((sos_GeneralMode)gameLogic).getPlayer2Score();
     }
 
-    private boolean checkSOS(int row, int col) {
+    public java.util.List<SOSLine> getSOSLines() {
+        return new java.util.ArrayList<>(sosLines);
+    }
+
+    private boolean checkSOS(int row, int col, Player movePlayer) {
+        boolean found = false;
+
         // Check horizontal SOS
-        if (col <= size - 3 && 
+        if (col + 2 < size && 
             board[row][col] == Cell.S &&
             board[row][col + 1] == Cell.O &&
             board[row][col + 2] == Cell.S) {
-            return true;
+            sosLines.add(new SOSLine(row, col, row, col + 2, movePlayer));
+            found = true;
         }
         
         // Check vertical SOS
-        if (row <= size - 3 &&
+        if (row + 2 < size &&
             board[row][col] == Cell.S &&
             board[row + 1][col] == Cell.O &&
             board[row + 2][col] == Cell.S) {
-            return true;
+            sosLines.add(new SOSLine(row, col, row + 2, col, movePlayer));
+            found = true;
         }
         
         // Check diagonal down-right
-        if (row <= size - 3 && col <= size - 3 &&
+        if (row + 2 < size && col + 2 < size &&
             board[row][col] == Cell.S &&
             board[row + 1][col + 1] == Cell.O &&
             board[row + 2][col + 2] == Cell.S) {
-            return true;
+            sosLines.add(new SOSLine(row, col, row + 2, col + 2, movePlayer));
+            found = true;
         }
         
         // Check diagonal down-left
-        if (row <= size - 3 && col >= 2 &&
+        if (row + 2 < size && col >= 2 &&
             board[row][col] == Cell.S &&
             board[row + 1][col - 1] == Cell.O &&
             board[row + 2][col - 2] == Cell.S) {
-            return true;
+            sosLines.add(new SOSLine(row, col, row + 2, col - 2, movePlayer));
+            found = true;
         }
         
-        return false;
+        return found;
     }
 
-    public int checkSOSFormation(int row, int col) {
+    public int checkSOSFormation(int row, int col, Player movePlayer) {
         int count = 0;
-        
-        // Check for SOS formations in all directions
-        for (int i = Math.max(0, row - 2); i <= Math.min(size - 3, row); i++) {
-            for (int j = Math.max(0, col - 2); j <= Math.min(size - 3, col); j++) {
-                if (checkSOS(i, j)) {
-                    count++;
-                    if (currentPlayer == Player.Player1) {
-                        player1Score++;
-                        if (mode == Mode.Simple) {
-                            winner = Player.Player1;
-                            gameEnd = true;
-                        }
-                    } else {
-                        player2Score++;
-                        if (mode == Mode.Simple) {
-                            winner = Player.Player2;
-                            gameEnd = true;
-                        }
-                    }
-                }
-            }
+        Cell currentCell = board[row][col];
+
+        // Check if current cell is S or O and search for SOS formations accordingly
+        if (currentCell == Cell.S) {
+            // Check if S is at start of SOS
+            count += checkSStartingFormations(row, col, movePlayer);
+            // Check if S is at end of SOS
+            count += checkSEndingFormations(row, col, movePlayer);
+        } else if (currentCell == Cell.O) {
+            // Check if O is in middle of SOS
+            count += checkOMiddleFormations(row, col, movePlayer);
         }
         
         return count;
     }
+
+    private int checkSStartingFormations(int row, int col, Player movePlayer) {
+        int count = 0;
+        
+        // Check right
+        if (col + 2 < size && 
+            board[row][col + 1] == Cell.O && 
+            board[row][col + 2] == Cell.S) {
+            sosLines.add(new SOSLine(row, col, row, col + 2, movePlayer));
+            count++;
+        }
+
+        // Check down
+        if (row + 2 < size && 
+            board[row + 1][col] == Cell.O && 
+            board[row + 2][col] == Cell.S) {
+            sosLines.add(new SOSLine(row, col, row + 2, col, movePlayer));
+            count++;
+        }
+
+        // Check diagonal down-right
+        if (row + 2 < size && col + 2 < size && 
+            board[row + 1][col + 1] == Cell.O && 
+            board[row + 2][col + 2] == Cell.S) {
+            sosLines.add(new SOSLine(row, col, row + 2, col + 2, movePlayer));
+            count++;
+        }
+
+        // Check diagonal down-left
+        if (row + 2 < size && col >= 2 && 
+            board[row + 1][col - 1] == Cell.O && 
+            board[row + 2][col - 2] == Cell.S) {
+            sosLines.add(new SOSLine(row, col, row + 2, col - 2, movePlayer));
+            count++;
+        }
+
+        return count;
+    }
+
+    private int checkSEndingFormations(int row, int col, Player movePlayer) {
+        int count = 0;
+
+        // Check left
+        if (col >= 2 && 
+            board[row][col - 2] == Cell.S && 
+            board[row][col - 1] == Cell.O) {
+            sosLines.add(new SOSLine(row, col - 2, row, col, movePlayer));
+            count++;
+        }
+
+        // Check up
+        if (row >= 2 && 
+            board[row - 2][col] == Cell.S && 
+            board[row - 1][col] == Cell.O) {
+            sosLines.add(new SOSLine(row - 2, col, row, col, movePlayer));
+            count++;
+        }
+
+        // Check diagonal up-right
+        if (row >= 2 && col + 2 < size && 
+            board[row - 2][col + 2] == Cell.S && 
+            board[row - 1][col + 1] == Cell.O) {
+            sosLines.add(new SOSLine(row - 2, col + 2, row, col, movePlayer));
+            count++;
+        }
+
+        // Check diagonal up-left
+        if (row >= 2 && col >= 2 && 
+            board[row - 2][col - 2] == Cell.S && 
+            board[row - 1][col - 1] == Cell.O) {
+            sosLines.add(new SOSLine(row - 2, col - 2, row, col, movePlayer));
+            count++;
+        }
+
+        return count;
+    }
+
+    private int checkOMiddleFormations(int row, int col, Player movePlayer) {
+        int count = 0;
+
+        // Check horizontal
+        if (col >= 1 && col + 1 < size && 
+            board[row][col - 1] == Cell.S && 
+            board[row][col + 1] == Cell.S) {
+            sosLines.add(new SOSLine(row, col - 1, row, col + 1, movePlayer));
+            count++;
+        }
+
+        // Check vertical
+        if (row >= 1 && row + 1 < size && 
+            board[row - 1][col] == Cell.S && 
+            board[row + 1][col] == Cell.S) {
+            sosLines.add(new SOSLine(row - 1, col, row + 1, col, movePlayer));
+            count++;
+        }
+
+        // Check diagonal down-right to up-left
+        if (row >= 1 && row + 1 < size && col >= 1 && col + 1 < size && 
+            board[row - 1][col - 1] == Cell.S && 
+            board[row + 1][col + 1] == Cell.S) {
+            sosLines.add(new SOSLine(row - 1, col - 1, row + 1, col + 1, movePlayer));
+            count++;
+        }
+
+        // Check diagonal up-right to down-left
+        if (row >= 1 && row + 1 < size && col >= 1 && col + 1 < size && 
+            board[row - 1][col + 1] == Cell.S && 
+            board[row + 1][col - 1] == Cell.S) {
+            sosLines.add(new SOSLine(row - 1, col + 1, row + 1, col - 1, movePlayer));
+            count++;
+        }
+
+        return count;
+    }
 }
+

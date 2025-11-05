@@ -11,6 +11,6 @@ public class SOSLine {
         this.c1 = c1;
         this.r2 = r2;
         this.c2 = c2;
-        this.color = player == model.sos_Model.Player.Player1 ? Color.RED : Color.BLUE;
+        this.color = player == model.sos_Model.Player.Player1 ? Color.BLUE : Color.RED;
     }
 }

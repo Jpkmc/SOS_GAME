@@ -89,17 +89,21 @@ public class sos_View extends JFrame {
    private void buildPlayer1Panel(){
     player1Panel = new JPanel();
     player1Panel.setLayout(new BoxLayout(player1Panel, BoxLayout.Y_AXIS));
-    player1Panel.setBorder(BorderFactory.createTitledBorder("Player 1"));
+    player1Panel.setBorder(BorderFactory.createTitledBorder("Blue player"));
     player1Panel.setPreferredSize(new Dimension(120,0));
+    player1Panel.setForeground(Color.BLUE);
 
-    scoreboardP1 = new JLabel("Score P1: 0");
+    scoreboardP1 = new JLabel("Score Blue: 0");
     scoreboardP1.setAlignmentX(Component.CENTER_ALIGNMENT);
+    scoreboardP1.setForeground(Color.BLUE);
     player1Panel.add(scoreboardP1);
 
     rbPlayer1S = new JRadioButton("S", true);
     rbPlayer1O = new JRadioButton("O");
     rbPlayer1S.setAlignmentX(Component.CENTER_ALIGNMENT);
     rbPlayer1O.setAlignmentX(Component.CENTER_ALIGNMENT);
+    rbPlayer1S.setForeground(Color.BLUE);
+    rbPlayer1O.setForeground(Color.BLUE);
     
     player1Group = new ButtonGroup();
     player1Group.add(rbPlayer1S);
@@ -115,17 +119,21 @@ public class sos_View extends JFrame {
    private void buildPlayer2Panel(){
     player2Panel = new JPanel();
     player2Panel.setLayout(new BoxLayout(player2Panel, BoxLayout.Y_AXIS));
-    player2Panel.setBorder(BorderFactory.createTitledBorder("Player 2"));
+    player2Panel.setBorder(BorderFactory.createTitledBorder("Red player"));
     player2Panel.setPreferredSize(new Dimension(120,0));
+    player2Panel.setForeground(Color.RED);
     
-    scoreboardP2 = new JLabel("Score P2: 0");
+    scoreboardP2 = new JLabel("Score Red: 0");
     scoreboardP2.setAlignmentX(Component.CENTER_ALIGNMENT);
+    scoreboardP2.setForeground(Color.RED);
     player2Panel.add(scoreboardP2);
     
     rbPlayer2S = new JRadioButton("S", true);
     rbPlayer2O = new JRadioButton("O");
     rbPlayer2S.setAlignmentX(Component.CENTER_ALIGNMENT);
     rbPlayer2O.setAlignmentX(Component.CENTER_ALIGNMENT);
+    rbPlayer2S.setForeground(Color.RED);
+    rbPlayer2O.setForeground(Color.RED);
     
     player2Group = new ButtonGroup();
     player2Group.add(rbPlayer2S);
@@ -311,9 +319,9 @@ public class sos_View extends JFrame {
    public void updateScore(int player, int score) {
        SwingUtilities.invokeLater(() -> {
            if (player == 1 && scoreboardP1 != null) {
-               scoreboardP1.setText("Score P1: " + score);
+               scoreboardP1.setText("Score Blue: " + score);
            } else if (player == 2 && scoreboardP2 != null) {
-               scoreboardP2.setText("Score P2: " + score);
+               scoreboardP2.setText("Score Red: " + score);
            }
        });
    }
