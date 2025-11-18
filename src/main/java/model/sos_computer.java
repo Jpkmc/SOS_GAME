@@ -1,73 +1,31 @@
-package controller;
+package model;
 
-import model.sos_Model;
-import java.util.ArrayList;
-import java.util.List;
-
-public class sos_computer {
+/**
+ * Abstract base class for computer players
+ * Defines common interface and shared functionality for AI opponents
+ */
+public abstract class sos_computer {
+    protected final sos_Model model;
+    
+    public sos_computer(sos_Model model) {
+        this.model = model;
+    }
     
     /**
      * Finds the best move for the computer player
+     * Must be implemented by subclasses for mode-specific strategies
      */
-    public int[] findBestMove(sos_Model model) {
-        int boardSize = model.getBoard().length;
-        int[] bestMove = null;
-        int bestScore = -1;
-        
-        for (int row = 0; row < boardSize; row++) {
-            for (int col = 0; col < boardSize; col++) {
-                if (model.cellEmpty(row, col)) {
-                    for (char letter : new char[]{'S', 'O'}) {
-                        int score = evaluateMove(model, row, col, letter);
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestMove = new int[]{row, col, letter == 'S' ? 1 : 2};
-                        }
-                    }
-                }
-            }
-        }
-        
-        if (bestMove == null) {
-            bestMove = findRandomMove(model);
-        }
-        
-        return bestMove;
-    }
+    public abstract int[] findBestMove();
     
     /**
      * Evaluates how good a potential move is
      */
-    public int evaluateMove(sos_Model model, int row, int col, char letter) {
-        int score = 0;
-        
-        sos_Model.Cell[][] board = model.getBoard();
-        sos_Model.Cell originalCell = board[row][col];
-        board[row][col] = (letter == 'S') ? sos_Model.Cell.S : sos_Model.Cell.O;
-        
-        int sosCount = countSOSAtPosition(model, row, col);
-        
-        board[row][col] = originalCell;
-        
-        if (sosCount > 0) {
-            score = 100 * sosCount;
-        } else {
-            score += checkBlockingPotential(model, row, col, letter);
-            
-            int boardSize = board.length;
-            int centerDist = Math.abs(row - boardSize/2) + Math.abs(col - boardSize/2);
-            score += (boardSize - centerDist) * 2;
-            
-            score += (int)(Math.random() * 5);
-        }
-        
-        return score;
-    }
+    protected abstract int evaluateMove(int row, int col, char letter);
     
     /**
      * Counts how many SOS formations exist at a position
      */
-    public int countSOSAtPosition(sos_Model model, int row, int col) {
+    protected int countSOSAtPosition(int row, int col) {
         int count = 0;
         sos_Model.Cell[][] board = model.getBoard();
         sos_Model.Cell cell = board[row][col];
@@ -123,33 +81,12 @@ public class sos_computer {
     }
     
     /**
-     * Checks if a move blocks opponent from scoring
-     */
-    public int checkBlockingPotential(sos_Model model, int row, int col, char letter) {
-        int blockScore = 0;
-        
-        char opponentLetter = (letter == 'S') ? 'O' : 'S';
-        sos_Model.Cell[][] board = model.getBoard();
-        sos_Model.Cell originalCell = board[row][col];
-        
-        board[row][col] = (opponentLetter == 'S') ? sos_Model.Cell.S : sos_Model.Cell.O;
-        int opponentPotential = countSOSAtPosition(model, row, col);
-        board[row][col] = originalCell;
-        
-        if (opponentPotential > 0) {
-            blockScore = 50 * opponentPotential;
-        }
-        
-        return blockScore;
-    }
-    
-    /**
      * Finds a random valid move as fallback
      */
-    public int[] findRandomMove(sos_Model model) {
+    protected int[] findRandomMove() {
         sos_Model.Cell[][] board = model.getBoard();
         int boardSize = board.length;
-        List<int[]> emptyCells = new ArrayList<>();
+        java.util.List<int[]> emptyCells = new java.util.ArrayList<>();
         
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
@@ -167,5 +104,4 @@ public class sos_computer {
         
         return null;
     }
-    
 }
