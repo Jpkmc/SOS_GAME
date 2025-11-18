@@ -5,7 +5,6 @@ import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import model.SOSLine;
-import model.sos_Model;
 
 public class sos_View extends JFrame {
    private JButton newGameButton;
@@ -23,7 +22,7 @@ public class sos_View extends JFrame {
    private JPanel buttonPanel;
    private LinePanel linePanel;
    private List<SOSLine> sosLines = new ArrayList<>();
-   private int windowSize = 500; // Default window size for the game board
+   private final int windowSize = 500; // Default window size for the game board
 
    private JPanel topPanel, player1Panel, player2Panel;
    private ButtonGroup player1Group, player2Group;
@@ -202,7 +201,6 @@ public class sos_View extends JFrame {
        @Override
        protected void addImpl(Component comp, Object constraints, int index) {
            // Prevent adding any child components to this panel
-           return;
        }
 
        @Override

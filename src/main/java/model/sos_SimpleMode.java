@@ -23,9 +23,9 @@ public class sos_SimpleMode extends sos_Winning {
         
         // Check if board is full
         sos_Model.Cell[][] board = model.getBoard();
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                if (board[i][j] == sos_Model.Cell.EMPTY) {
+        for (sos_Model.Cell[] row : board) {
+            for (sos_Model.Cell cell : row) {
+                if (cell == sos_Model.Cell.EMPTY) {
                     return false;
                 }
             }

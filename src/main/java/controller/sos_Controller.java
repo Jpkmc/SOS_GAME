@@ -13,9 +13,9 @@ import java.awt.event.*;
  */
 public class sos_Controller {
     // Stores the game logic
-    private sos_Model model;
+    final private sos_Model model;
     // Stores the game view
-    private sos_View view;
+    final private sos_View view;
 
     /**
      * Creates new controller for the game
@@ -67,14 +67,16 @@ public class sos_Controller {
             // Update board cells
             for(int i = 0; i < board.length; i++){
                 for(int j = 0; j < board[i].length; j++){
-                    if(board[i][j] == sos_Model.Cell.S){
-                        boardButtons[i][j].setText("S");
-                    }
-                    else if(board[i][j] == sos_Model.Cell.O){
-                        boardButtons[i][j].setText("O");
-                    }
-                    else{
-                        boardButtons[i][j].setText("");
+                    switch(board[i][j]) {
+                        case S:
+                            boardButtons[i][j].setText("S");
+                            break;
+                        case O:
+                            boardButtons[i][j].setText("O");
+                            break;
+                        default:
+                            boardButtons[i][j].setText("");
+                            break;
                     }
                 }
             }

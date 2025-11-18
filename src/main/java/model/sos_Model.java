@@ -33,7 +33,7 @@ public class sos_Model {
         sosLines = new java.util.ArrayList<>();
     }
 
-    public void initialzeBoard(){
+    public final void initialzeBoard(){
         board = new Cell[size][size];
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
@@ -62,14 +62,15 @@ public class sos_Model {
             return false;
         }
         
-        if(letter == 'S'){
-            board[row][colmun] = Cell.S;
-        }
-        else if (letter == 'O'){
-            board[row][colmun] = Cell.O;
-        }
-        else{
-            return false;
+        switch(letter) {
+            case 'S':
+                board[row][colmun] = Cell.S;
+                break;
+            case 'O':
+                board[row][colmun] = Cell.O;
+                break;
+            default:
+                return false;
         }
         
         // Store current player before checking SOS formations
@@ -157,48 +158,6 @@ public class sos_Model {
 
     public java.util.List<SOSLine> getSOSLines() {
         return new java.util.ArrayList<>(sosLines);
-    }
-
-    private boolean checkSOS(int row, int col, Player movePlayer) {
-        boolean found = false;
-
-        // Check horizontal SOS
-        if (col + 2 < size && 
-            board[row][col] == Cell.S &&
-            board[row][col + 1] == Cell.O &&
-            board[row][col + 2] == Cell.S) {
-            sosLines.add(new SOSLine(row, col, row, col + 2, movePlayer));
-            found = true;
-        }
-        
-        // Check vertical SOS
-        if (row + 2 < size &&
-            board[row][col] == Cell.S &&
-            board[row + 1][col] == Cell.O &&
-            board[row + 2][col] == Cell.S) {
-            sosLines.add(new SOSLine(row, col, row + 2, col, movePlayer));
-            found = true;
-        }
-        
-        // Check diagonal down-right
-        if (row + 2 < size && col + 2 < size &&
-            board[row][col] == Cell.S &&
-            board[row + 1][col + 1] == Cell.O &&
-            board[row + 2][col + 2] == Cell.S) {
-            sosLines.add(new SOSLine(row, col, row + 2, col + 2, movePlayer));
-            found = true;
-        }
-        
-        // Check diagonal down-left
-        if (row + 2 < size && col >= 2 &&
-            board[row][col] == Cell.S &&
-            board[row + 1][col - 1] == Cell.O &&
-            board[row + 2][col - 2] == Cell.S) {
-            sosLines.add(new SOSLine(row, col, row + 2, col - 2, movePlayer));
-            found = true;
-        }
-        
-        return found;
     }
 
     public int checkSOSFormation(int row, int col, Player movePlayer) {
