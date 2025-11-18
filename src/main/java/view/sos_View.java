@@ -15,6 +15,7 @@ public class sos_View extends JFrame {
 
    private JRadioButton rbPlayer1S, rbPlayer1O;
    private JRadioButton rbPlayer2S, rbPlayer2O;
+   private JCheckBox cbPlayer1Computer, cbPlayer2Computer;
 
    private JButton[][] boardButton;
    private JPanel boardPanel;
@@ -114,6 +115,11 @@ public class sos_View extends JFrame {
     player1Panel.add(Box.createVerticalGlue());
     player1Panel.add(rbPlayer1O);
     player1Panel.add(Box.createRigidArea(new Dimension(0, 10)));
+    
+    cbPlayer1Computer = new JCheckBox("Computer");
+    cbPlayer1Computer.setAlignmentX(Component.CENTER_ALIGNMENT);
+    cbPlayer1Computer.setForeground(Color.BLUE);
+    player1Panel.add(cbPlayer1Computer);
    }
 
    private void buildPlayer2Panel(){
@@ -145,6 +151,11 @@ public class sos_View extends JFrame {
     player2Panel.add(Box.createVerticalGlue());
     player2Panel.add(rbPlayer2O);
     player2Panel.add(Box.createRigidArea(new Dimension(0, 10)));
+    
+    cbPlayer2Computer = new JCheckBox("Computer");
+    cbPlayer2Computer.setAlignmentX(Component.CENTER_ALIGNMENT);
+    cbPlayer2Computer.setForeground(Color.RED);
+    player2Panel.add(cbPlayer2Computer);
 
    }
 
@@ -316,6 +327,10 @@ public class sos_View extends JFrame {
    public void setPlayer1Group(ButtonGroup player1Group) { this.player1Group = player1Group;}
    public ButtonGroup getPlayer2Group() {return player2Group; }
    public void setPlayer2Group(ButtonGroup player2Group) { this.player2Group = player2Group;}
+   public JCheckBox getCbPlayer1Computer() { return cbPlayer1Computer; }
+   public void setCbPlayer1Computer(JCheckBox cbPlayer1Computer) { this.cbPlayer1Computer = cbPlayer1Computer; }
+   public JCheckBox getCbPlayer2Computer() { return cbPlayer2Computer; }
+   public void setCbPlayer2Computer(JCheckBox cbPlayer2Computer) { this.cbPlayer2Computer = cbPlayer2Computer; }
    public void updateScore(int player, int score) {
        SwingUtilities.invokeLater(() -> {
            if (player == 1 && scoreboardP1 != null) {
