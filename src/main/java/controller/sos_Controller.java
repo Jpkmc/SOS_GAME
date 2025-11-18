@@ -1,6 +1,8 @@
 package controller;
 
 import model.sos_Model;
+import model.sos_computerSM;
+import model.sos_computerGM;
 import view.sos_View;
 import javax.swing.*;
 import java.awt.event.*;
@@ -16,6 +18,11 @@ public class sos_Controller {
     final private sos_Model model;
     // Stores the game view
     final private sos_View view;
+    
+    // Computer AI instances
+    private sos_computerSM computerSM;
+    private sos_computerGM computerGM;
+    private Timer computerMoveTimer;
 
     /**
      * Creates new controller for the game
@@ -25,6 +32,10 @@ public class sos_Controller {
     public sos_Controller(sos_Model model, sos_View view){
         this.view = view;
         this.model = model;
+        
+        // Initialize computer AI
+        this.computerSM = new sos_computerSM(model);
+        this.computerGM = new sos_computerGM(model);
 
         initialzeGame();
         initializeListeners();
@@ -147,6 +158,13 @@ public class sos_Controller {
                 // make sure the board looks right
                 view.getBoardPanel().revalidate();
                 view.getBoardPanel().repaint();
+                
+                // Reinitialize computer AI for new game
+                computerSM = new sos_computerSM(model);
+                computerGM = new sos_computerGM(model);
+                
+                // Start computer move if Player 1 is computer
+                triggerComputerMoveIfNeeded();
             } else {
                 // tell user they need bigger size
                 JOptionPane.showMessageDialog(view, "Board size must be at least 3", "Invalid Size", JOptionPane.ERROR_MESSAGE);
@@ -174,10 +192,15 @@ public class sos_Controller {
      * @param column which column they clicked
      */
     private void handleCellClick(int row, int column) {
+        // Check if current player is computer - ignore human clicks
+        sos_Model.Player currentPlayer = model.getCurrentPlayer();
+        if ((currentPlayer == sos_Model.Player.Player1 && view.getCbPlayer1Computer().isSelected()) ||
+            (currentPlayer == sos_Model.Player.Player2 && view.getCbPlayer2Computer().isSelected())) {
+            return; // Ignore clicks when it's computer's turn
+        }
+        
         // only do something if cell is empty and game is not over
-        if(model.cellEmpty(row, column)) {
-            // see who's turn it is
-            sos_Model.Player currentPlayer = model.getCurrentPlayer();
+        if(model.cellEmpty(row, column) && !model.isGameOver()) {
             char letter;
             
             // get what letter they want (S or O)
@@ -201,6 +224,9 @@ public class sos_Controller {
                 
                 if (model.isGameOver()) {
                     handleGameOver();
+                } else {
+                    // Check if next player is computer
+                    triggerComputerMoveIfNeeded();
                 }
             }
         }
@@ -239,5 +265,67 @@ public class sos_Controller {
         }
         
         JOptionPane.showMessageDialog(view, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Checks if current player is computer and triggers their move
+     */
+    private void triggerComputerMoveIfNeeded() {
+        sos_Model.Player currentPlayer = model.getCurrentPlayer();
+        boolean isComputerTurn = (currentPlayer == sos_Model.Player.Player1 && view.getCbPlayer1Computer().isSelected()) ||
+                                 (currentPlayer == sos_Model.Player.Player2 && view.getCbPlayer2Computer().isSelected());
+        
+        if (isComputerTurn && !model.isGameOver()) {
+            // Add delay so user can see what's happening
+            computerMoveTimer = new Timer(800, e -> {
+                makeComputerMove();
+                ((Timer)e.getSource()).stop();
+            });
+            computerMoveTimer.setRepeats(false);
+            computerMoveTimer.start();
+        }
+    }
+    
+    /**
+     * Makes the computer player move
+     */
+    private void makeComputerMove() {
+        if (model.isGameOver()) {
+            return;
+        }
+        
+        // Get the appropriate computer AI based on game mode
+        int[] move;
+        if (model.isSimpleGameMode()) {
+            move = computerSM.findBestMove();
+        } else {
+            move = computerGM.findBestMove();
+        }
+        
+        if (move != null) {
+            int row = move[0];
+            int col = move[1];
+            char letter = move[2] == 1 ? 'S' : 'O';
+            
+            // Make the move
+            if (model.move(row, col, letter)) {
+                // Update display
+                updateBoardDisplay();
+                SwingUtilities.invokeLater(() -> {
+                    view.updateLines(model.getSOSLines());
+                    updateScores();
+                    view.revalidate();
+                    view.repaint();
+                });
+                
+                // Check if game is over
+                if (model.isGameOver()) {
+                    handleGameOver();
+                } else {
+                    // Check if next player is also computer
+                    triggerComputerMoveIfNeeded();
+                }
+            }
+        }
     }
 }
