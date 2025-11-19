@@ -118,8 +118,10 @@ public class sos_computerSM extends sos_computer {
         // Check setup potential (positions that could lead to SOS)
         score += checkSetupPotential(row, col, letter);
         
-        // Add small random factor to avoid predictability
-        score += (int)(Math.random() * 3);
+        // Add small random factor to avoid predictability (unless in test mode)
+        if (!testMode) {
+            score += (int)(Math.random() * 3);
+        }
         
         return score;
     }

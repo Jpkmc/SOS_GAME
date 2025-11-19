@@ -67,7 +67,10 @@ public class sos_computerGM extends sos_computer {
             int centerDist = Math.abs(row - boardSize/2) + Math.abs(col - boardSize/2);
             score += (boardSize - centerDist) * 3;
             
-            score += (int)(Math.random() * 5);
+            // Add randomness only when not in test mode
+            if (!testMode) {
+                score += (int)(Math.random() * 5);
+            }
         }
         
         return score;
@@ -89,7 +92,7 @@ public class sos_computerGM extends sos_computer {
             
             for (int dist = 1; dist <= 2; dist++) {
                 int newRow = row + dir[0] * dist;
-                int newCol = col + dir[1] * dist;
+                int newCol = col + dir[1] * dist; 
                 
                 if (newRow >= 0 && newRow < size && newCol >= 0 && newCol < size) {
                     if (board[newRow][newCol] == sos_Model.Cell.S) adjacentS++;

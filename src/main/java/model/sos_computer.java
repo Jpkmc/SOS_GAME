@@ -6,9 +6,17 @@ package model;
  */
 public abstract class sos_computer {
     protected final sos_Model model;
+    protected boolean testMode = false;
     
     public sos_computer(sos_Model model) {
         this.model = model;
+    }
+    
+    /**
+     * Enables test mode to make AI behavior deterministic (removes randomness)
+     */
+    public void enableTestMode() {
+        this.testMode = true;
     }
     
     /**
