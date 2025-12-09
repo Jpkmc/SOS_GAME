@@ -19,6 +19,7 @@ public class sos_View extends JFrame {
    // Recording controls
    private JCheckBox cbRecordGame;
    private JButton btnSaveGame;
+   private JButton btnLoadGame;
 
    private JButton[][] boardButton;
    private JPanel boardPanel;
@@ -74,6 +75,7 @@ public class sos_View extends JFrame {
        // Initialize recording controls (will be added to bottom panel)
        cbRecordGame = new JCheckBox("Record Game");
        btnSaveGame = new JButton("Save Game");
+       btnLoadGame = new JButton("Load Game");
 
 
    }
@@ -172,6 +174,8 @@ public class sos_View extends JFrame {
        bottomPanel.add(cbRecordGame);
        bottomPanel.add(Box.createHorizontalStrut(10));
        bottomPanel.add(btnSaveGame);
+       bottomPanel.add(Box.createHorizontalStrut(10));
+       bottomPanel.add(btnLoadGame);
        return bottomPanel;
    }
 
@@ -350,6 +354,7 @@ public class sos_View extends JFrame {
    // Getters for recording controls
    public JCheckBox getCbRecordGame() { return cbRecordGame; }
    public JButton getBtnSaveGame() { return btnSaveGame; }
+   public JButton getBtnLoadGame() { return btnLoadGame; }
    public void updateScore(int player, int score) {
        SwingUtilities.invokeLater(() -> {
            if (player == 1 && scoreboardP1 != null) {
