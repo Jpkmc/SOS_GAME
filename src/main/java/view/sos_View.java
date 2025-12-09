@@ -18,7 +18,7 @@ public class sos_View extends JFrame {
    
    // Recording controls
    private JCheckBox cbRecordGame;
-   private JButton btnSaveGame, btnLoadGame;
+   private JButton btnSaveGame;
 
    private JButton[][] boardButton;
    private JPanel boardPanel;
@@ -45,7 +45,7 @@ public class sos_View extends JFrame {
 
        add(topPanel, BorderLayout.NORTH);
         add(buildCenterPanel(), BorderLayout.CENTER);
-      // add(bottomPanel, BorderLayout.SOUTH);
+        add(buildBottomPanel(), BorderLayout.SOUTH);
 
    }
 
@@ -71,14 +71,9 @@ public class sos_View extends JFrame {
        // Add a spacer
        topPanel.add(Box.createHorizontalStrut(10));
        
-       // Add recording controls
+       // Initialize recording controls (will be added to bottom panel)
        cbRecordGame = new JCheckBox("Record Game");
        btnSaveGame = new JButton("Save Game");
-       btnLoadGame = new JButton("Load Game");
-       
-       topPanel.add(cbRecordGame);
-       topPanel.add(btnSaveGame);
-       topPanel.add(btnLoadGame);
 
 
    }
@@ -169,6 +164,15 @@ public class sos_View extends JFrame {
     cbPlayer2Computer.setForeground(Color.RED);
     player2Panel.add(cbPlayer2Computer);
 
+   }
+
+   private JPanel buildBottomPanel() {
+       JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+       bottomPanel.setBorder(BorderFactory.createTitledBorder("Game Recording"));
+       bottomPanel.add(cbRecordGame);
+       bottomPanel.add(Box.createHorizontalStrut(10));
+       bottomPanel.add(btnSaveGame);
+       return bottomPanel;
    }
 
    private class LinePanel extends JPanel {
@@ -346,7 +350,6 @@ public class sos_View extends JFrame {
    // Getters for recording controls
    public JCheckBox getCbRecordGame() { return cbRecordGame; }
    public JButton getBtnSaveGame() { return btnSaveGame; }
-   public JButton getBtnLoadGame() { return btnLoadGame; }
    public void updateScore(int player, int score) {
        SwingUtilities.invokeLater(() -> {
            if (player == 1 && scoreboardP1 != null) {
