@@ -159,6 +159,14 @@ public class sos_Model {
     public java.util.List<SOSLine> getSOSLines() {
         return new java.util.ArrayList<>(sosLines);
     }
+    
+    public int getBoardSize() {
+        return size;
+    }
+    
+    public Mode getGameMode() {
+        return mode;
+    }
 
     public int checkSOSFormation(int row, int col, Player movePlayer) {
         int count = 0;
