@@ -15,6 +15,10 @@ public class sos_View extends JFrame {
    private JRadioButton rbPlayer1S, rbPlayer1O;
    private JRadioButton rbPlayer2S, rbPlayer2O;
    private JCheckBox cbPlayer1Computer, cbPlayer2Computer;
+   
+   // Recording controls
+   private JCheckBox cbRecordGame;
+   private JButton btnSaveGame, btnLoadGame;
 
    private JButton[][] boardButton;
    private JPanel boardPanel;
@@ -66,6 +70,15 @@ public class sos_View extends JFrame {
        topPanel.add(txtBoardsize);
        // Add a spacer
        topPanel.add(Box.createHorizontalStrut(10));
+       
+       // Add recording controls
+       cbRecordGame = new JCheckBox("Record Game");
+       btnSaveGame = new JButton("Save Game");
+       btnLoadGame = new JButton("Load Game");
+       
+       topPanel.add(cbRecordGame);
+       topPanel.add(btnSaveGame);
+       topPanel.add(btnLoadGame);
 
 
    }
@@ -329,12 +342,87 @@ public class sos_View extends JFrame {
    public void setCbPlayer1Computer(JCheckBox cbPlayer1Computer) { this.cbPlayer1Computer = cbPlayer1Computer; }
    public JCheckBox getCbPlayer2Computer() { return cbPlayer2Computer; }
    public void setCbPlayer2Computer(JCheckBox cbPlayer2Computer) { this.cbPlayer2Computer = cbPlayer2Computer; }
+   
+   // Getters for recording controls
+   public JCheckBox getCbRecordGame() { return cbRecordGame; }
+   public JButton getBtnSaveGame() { return btnSaveGame; }
+   public JButton getBtnLoadGame() { return btnLoadGame; }
    public void updateScore(int player, int score) {
        SwingUtilities.invokeLater(() -> {
            if (player == 1 && scoreboardP1 != null) {
                scoreboardP1.setText("Score Blue: " + score);
            } else if (player == 2 && scoreboardP2 != null) {
                scoreboardP2.setText("Score Red: " + score);
+           }
+       });
+   }
+   
+   // Methods for replay functionality
+   public void updateBoard(model.sos_Model.Cell[][] board) {
+       if (boardButton != null && board != null) {
+           for (int i = 0; i < board.length; i++) {
+               for (int j = 0; j < board[i].length; j++) {
+                   String text = "";
+                   if (board[i][j] == model.sos_Model.Cell.S) {
+                       text = "S";
+                   } else if (board[i][j] == model.sos_Model.Cell.O) {
+                       text = "O";
+                   }
+                   boardButton[i][j].setText(text);
+               }
+           }
+           repaint();
+       }
+   }
+   
+   public void updateScores(int player1Score, int player2Score) {
+       updateScore(1, player1Score);
+       updateScore(2, player2Score);
+   }
+   
+   public void updateCurrentPlayer(model.sos_Model.Player currentPlayer) {
+       // For replay, we can indicate current player by highlighting the appropriate panel
+       SwingUtilities.invokeLater(() -> {
+           if (currentPlayer == model.sos_Model.Player.Player1) {
+               player1Panel.setBackground(new Color(173, 216, 230)); // Light blue
+               player2Panel.setBackground(null);
+           } else {
+               player1Panel.setBackground(null);
+               player2Panel.setBackground(new Color(255, 182, 193)); // Light pink
+           }
+           repaint();
+       });
+   }
+   
+   public void disableInteraction() {
+       // Disable all interactive elements for replay mode
+       if (boardButton != null) {
+           for (int i = 0; i < boardButton.length; i++) {
+               for (int j = 0; j < boardButton[i].length; j++) {
+                   boardButton[i][j].setEnabled(false);
+               }
+           }
+       }
+       
+       // Disable other controls
+       if (newGameButton != null) newGameButton.setEnabled(false);
+       if (rbSimple != null) rbSimple.setEnabled(false);
+       if (rbGeneral != null) rbGeneral.setEnabled(false);
+       if (txtBoardsize != null) txtBoardsize.setEnabled(false);
+       if (rbPlayer1S != null) rbPlayer1S.setEnabled(false);
+       if (rbPlayer1O != null) rbPlayer1O.setEnabled(false);
+       if (rbPlayer2S != null) rbPlayer2S.setEnabled(false);
+       if (rbPlayer2O != null) rbPlayer2O.setEnabled(false);
+       if (cbPlayer1Computer != null) cbPlayer1Computer.setEnabled(false);
+       if (cbPlayer2Computer != null) cbPlayer2Computer.setEnabled(false);
+   }
+   
+   public void setModeDisplay(model.sos_Model.Mode mode) {
+       SwingUtilities.invokeLater(() -> {
+           if (mode == model.sos_Model.Mode.Simple) {
+               rbSimple.setSelected(true);
+           } else {
+               rbGeneral.setSelected(true);
            }
        });
    }
